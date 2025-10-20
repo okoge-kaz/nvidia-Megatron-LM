@@ -106,8 +106,18 @@ def parse_args(extra_args_provider=None, ignore_unknown_args=False):
 
 
     # Args from environment
+    if args.use_mpi:
+        global_rank = int(os.getenv('OMPI_COMM_WORLD_RANK', 0))
+        local_rank = int(os.getenv('OMPI_COMM_WORLD_LOCAL_RANK', 0))
+        world_size = int(os.getenv('OMPI_COMM_WORLD_SIZE', 1))
+
+        os.environ['RANK'] = str(global_rank)
+        os.environ['LOCAL_RANK'] = str(local_rank)
+        os.environ['WORLD_SIZE'] = str(world_size)
+
     args.rank = int(os.getenv('RANK', '0'))
     args.world_size = int(os.getenv("WORLD_SIZE", '1'))
+    args.local_rank = int(os.getenv('LOCAL_RANK', '0'))
 
     # Args to disable MSC
     if not args.enable_msc:
@@ -1978,6 +1988,7 @@ def _add_training_args(parser):
                        'If None, the default backend will be used.')
     group.add_argument('--high-priority-stream-groups', nargs='*', type=str, default=[],
                        help='The communicator group names to use high priority streams.')
+    group.add_argument("--use-mpi", action="store_true", default=False)
 
     return parser
 
