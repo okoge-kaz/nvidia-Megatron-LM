@@ -247,4 +247,5 @@ mpirun --display-allocation --display-map --report-bindings \
     --transformer-impl "transformer_engine" \
     --use-mpi \
     --log-memory-to-tensorboard \
-    ${ACCELERATION_ARGS}
+    ${ACCELERATION_ARGS} \
+    --log-throughput
